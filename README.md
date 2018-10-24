@@ -12,16 +12,17 @@ Ruta Desarrollo: http://127.0.0.1:3500
 
 # Errores
 
-##Manejo de Errores
+## Manejo de Errores
 Para manejar errores personalizados hay que crear el error y lanzar un next.
+
 Todos los errores deben pasar por helper/error.helper.js.
 
-###Ejemplo
+### Ejemplo
     let e = new Error('{mensaje customizado de tu error}');
     e.name = "{ErrorType}";
     return next(e);
 
-###ErrorType
+### ErrorType
 Código de error  | ErrorType (e.name)
 ------------- | -------------
 301  | movedPermanently
@@ -44,11 +45,11 @@ Código de error  | ErrorType (e.name)
 504  | gatewayTimeout
 507  | insufficientStorage
 
-##Respuesta de errores
+## Respuesta de errores
 Los errores son retornados en JSON. Cada error tiene un **status**, **name**, **message** y **customMessage**.
 El campo **message** es personalizado y debe estar en ingles
 
-###Ejemplo de un status 400
+### Ejemplo de un status 400
     {
       "status": 400,
       "name": 'badRequest',
