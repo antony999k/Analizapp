@@ -10,6 +10,17 @@ Gestiona el registro de usuarios, perfiles de usuarios, reportes de usuarios y d
 
 Ruta Desarrollo: http://127.0.0.1:3500
 
+## Revisar estado del api (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /health
+
+### Respuesta esperada
+    {
+    "status": 200,
+    "name": "OK",
+    "message": "i'm healthy",
+    "customMessage": "API Analizapp en funcionamiento"
+    }
+
 # Errores
 
 ## Manejo de Errores

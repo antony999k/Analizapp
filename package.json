@@ -4,7 +4,9 @@
   "description": "Api para proyecto integrador de Dispositivos moviles (Para conexioón con app de Android)",
   "main": "app.js",
   "scripts": {
-    "test": "npm nodemon"
+    "start": "nodemon app.js",
+    "test": "node app.js",
+    "dev": "DEBUG=dev NODE_ENV=develop nodemon app.js"
   },
   "author": "antony999k",
   "license": "ISC",
