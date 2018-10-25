@@ -27,5 +27,5 @@ app.use('/', router);
 // Listen ========================================================
 const port = process.env.PORT || 3500
 app.listen(port, () => {
-    debug('mxp_api_mlmReserva: http://127.0.0.1:' + port);
+    debug('Analizapp: http://127.0.0.1:' + port);
 });
