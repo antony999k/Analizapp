@@ -8,7 +8,42 @@ Gestiona el registro de usuarios, perfiles de usuarios, reportes de usuarios y d
 
 # Endpoints
 
-Ruta Desarrollo: http://127.0.0.1:3500
+Ruta Desarrollo: http://127.0.0.1:3500/
+Ruta Producción: http://138.68.53.94/
+
+## Obtener todos los usuarios (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /users
+
+## Obtener un usuario (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /user/:id
+
+
+## Agregar un usuario (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /user/
+
+### Body
+    {
+    "usuario":{
+        "nombre":"$nombre",
+        "apellido":"$apellido",
+        "correo":"$correo",
+        "contrasenia":"$contrasenia"
+        }
+    }
+
+## Autenticar usuario (POST) ![#e84747](https://placehold.it/15/e84747/000000?text=+)
+    /user/login
+
+### Body
+    {
+      "correo":"$correo",
+      "contrasenia":"$contrasenia"
+    }
+
+### Respuesta esperada
+    {
+      "token":"$token",
+    }
 
 ## Revisar estado del api (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /health

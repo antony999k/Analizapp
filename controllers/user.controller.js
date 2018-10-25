@@ -4,6 +4,7 @@ const debug = require('debug')('dev');
 const database = require('../db/database');
 const mysql2 = require('mysql2');
 const SSH2Client = require('ssh2').Client;
+const jwt = require('jsonwebtoken');
 
 //Obtener todos los Usuarios
 exports.getUsers = (req, res, next) => {
@@ -17,6 +18,44 @@ exports.getUsers = (req, res, next) => {
           'SELECT * FROM `Usuarios`',
           function(err, results, fields) {
             res.send(results)
+          }
+        );
+      }
+    );
+  }).connect(database.sshConf);
+}
+
+exports.getUser = (req, res, next) => {
+  if(req.params.id == null || req.params.id == undefined){
+    let e = new Error('Se debe ingresar un id');
+    e.name = "badRequest";
+    return next(e);
+  }
+
+  let id = req.params.id;
+
+  let ssh = new SSH2Client();
+  ssh.on('ready', function() {
+    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
+        if (err) throw err;
+        database.sqlConf.stream = stream;
+        let db = mysql2.createConnection(database.sqlConf);
+        db.query(
+          'SELECT * FROM Usuarios WHERE id='+id,
+          function(err, results, fields) {
+            if(err){
+              let e = new Error(err);
+              e.name = "internal";
+              return next(e);
+            }
+            if(results.length == 0){
+              let e = new Error('Usuario no encontrado');
+              e.name = "notFound";
+              return next(e);
+            }
+            //Convierte el array en objeto
+            let finalResults = results[0]
+            res.status(200).send(finalResults);
           }
         );
       }
@@ -67,39 +106,5 @@ exports.registerUser = (req,res,next) =>{
 
 //ingresar con un usuario
 exports.loginUser = (req,res,next) =>{
-  if(req.params.id == null || req.params.id == undefined){
-    let e = new Error('Se debe ingresar un id');
-    e.name = "badRequest";
-    return next(e);
-  }
 
-  let id = req.params.id;
-
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-        if (err) throw err;
-        database.sqlConf.stream = stream;
-        let db = mysql2.createConnection(database.sqlConf);
-        db.query(
-          'SELECT * FROM Usuarios WHERE id='+id,
-          function(err, results, fields) {
-            if(err){
-              let e = new Error(err);
-              e.name = "internal";
-              return next(e);
-            }
-            if(results.length == 0){
-              let e = new Error('Usuario no encontrado');
-              e.name = "notFound";
-              return next(e);
-            }
-            //Convierte el array en objeto
-            let finalResults = results[0]
-            res.status(200).send(finalResults);
-          }
-        );
-      }
-    );
-  }).connect(database.sshConf);
 }

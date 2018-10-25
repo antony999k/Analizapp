@@ -13,11 +13,13 @@ module.exports = (() => {
   // Usuarios =========================================================
   //Obtener todos los usuarios
   router.get('/users', userController.getUsers);
+  //Obtener un usuario
+  router.get('/user', userController.getUser);
+  router.get('/user/:id', userController.getUser);
   //Registrar un usuario
   router.post('/user', userController.registerUser);
-  //Obtener un usuario
-  router.get('/user', userController.loginUser);
-  router.get('/user/:id', userController.loginUser);
+  //Login Usuario
+  router.post('/user/login', userController.loginUser);
 
   // General =========================================================
   //Maneja /
