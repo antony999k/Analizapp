@@ -5,6 +5,8 @@ const router = express.Router();
 //Rutas de controladores
 const globalController = require('../controllers/global.controller');
 const userController = require('../controllers/user.controller');
+//Rutas de middlewares
+const authMiddleware = require('../middlewares/auth.middleware');
 //Rutas de helpers
 const errorHelper = require('../helpers/error.helper');
 
@@ -12,7 +14,7 @@ module.exports = (() => {
 
   // Usuarios =========================================================
   //Obtener todos los usuarios
-  router.get('/users', userController.getUsers);
+  router.get('/users', authMiddleware.isAuth, userController.getUsers);
   //Obtener un usuario
   router.get('/user', userController.getUser);
   router.get('/user/:id', userController.getUser);
