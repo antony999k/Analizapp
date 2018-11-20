@@ -79,6 +79,8 @@ exports.registerUser = (req, res, next) => {
   let Usuario = req.body.usuario;
   let UsuarioShort = { "correo":  Usuario.correo, "contrasenia":Usuario.contrasenia}
 
+  let token = authHelper.createToken(UsuarioShort);
+
   bcrypt.hash(req.body.usuario.contrasenia, saltRounds, function(err, hash) {
     if (err) {
       let e = new Error('Error al guardar usuario');
@@ -109,7 +111,6 @@ exports.registerUser = (req, res, next) => {
               return next(e);
             }
           }
-          let token = authHelper.createToken(UsuarioShort);
           res.status(201).send({
             status: 201,
             name: 'Created',
@@ -125,5 +126,21 @@ exports.registerUser = (req, res, next) => {
 
 //ingresar con un usuario ***************************************************************
 exports.loginUser = (req, res, next) => {
+  if ((req.body.correo == null || req.body.correo == undefined) || (req.body.contrasenia == null || req.body.contrasenia == undefined)) {
+    let e = new Error('Se debe ingresar correo y contraseña');
+    e.name = "badRequest";
+    return next(e);
+  }
 
+  let User = { "correo": req.body.correo, "contrasenia": req.body.contrasenia }
+  console.log(User)
+
+
+  res.status(200).send({
+    status: 200,
+    name: 'Ok',
+    customMessage: 'Autenticación correcta',
+    message: 'Ok',
+    token: "token"
+  })
 }
