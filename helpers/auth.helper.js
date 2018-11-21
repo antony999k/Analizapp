@@ -23,9 +23,9 @@ exports.decodeToken = function(token) {
 
 //Crear token para correo
 exports.createMailToken = function() {
-  let generator = new CodeGenerator();
+  let generator = new codeGenerator();
   let pattern = '######';
   let howMany = 1;
   let options = {};
-  return generator.generateCodes(pattern, howMany, options);
+  return generator.generateCodes(pattern, howMany, options)[0];
 }
