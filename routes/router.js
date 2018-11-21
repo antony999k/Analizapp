@@ -14,10 +14,11 @@ module.exports = (() => {
 
   // Usuarios =========================================================
   //Obtener todos los usuarios
-  router.get('/users', authMiddleware.isAuth, userController.getUsers);
+  router.get('/users', authMiddleware.isAuth, authMiddleware.isAuthAdmin, userController.getUsers);
   //Obtener un usuario
   router.get('/user', userController.getUser);
-  router.get('/user/:id', userController.getUser);
+  router.get('/user/me', userController.getMyUser);
+  router.get('/user/:id', authMiddleware.isAuth, authMiddleware.isAuthAdmin, userController.getUser);
   //Registrar un usuario
   router.post('/user', userController.registerUser);
   //Login Usuario

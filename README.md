@@ -32,7 +32,7 @@ Ruta Producción: http://138.68.53.94/
         }
     }
 
-## Autenticar usuario (POST) ![#e84747](https://placehold.it/15/e84747/000000?text=+)
+## Autenticar usuario (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /user/login
 
 #### Body
@@ -43,6 +43,10 @@ Ruta Producción: http://138.68.53.94/
 
 #### Respuesta esperada
     {
+      "status": 200,
+      "name": "Ok",
+      "customMessage": "Autenticación correcta",
+      "message": "Ok",
       "token":"$token",
     }
 
