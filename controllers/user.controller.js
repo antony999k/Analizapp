@@ -133,14 +133,51 @@ exports.loginUser = (req, res, next) => {
   }
 
   let User = { "correo": req.body.correo, "contrasenia": req.body.contrasenia }
-  console.log(User)
+  let hash = "";
 
+  let token = authHelper.createToken(User);
 
-  res.status(200).send({
-    status: 200,
-    name: 'Ok',
-    customMessage: 'Autenticación correcta',
-    message: 'Ok',
-    token: "token"
-  })
+  let ssh = new SSH2Client();
+  ssh.on('ready', function() {
+    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
+      if (err) throw err;
+      database.sqlConf.stream = stream;
+      let db = mysql2.createConnection(database.sqlConf);
+      db.query(
+        'SELECT contrasenia FROM Usuarios WHERE correo=\'' + User.correo + '\'',
+        function(err, results, fields) {
+          if (err) {
+            let e = new Error(err);
+            e.name = "internal";
+            return next(e);
+          }
+          if (results.length == 0) {
+            let e = new Error('Usuario no encontrado');
+            e.name = "notFound";
+            return next(e);
+          }
+          //Convierte el array en objeto
+          let finalResults = results[0]
+          hash = finalResults.contrasenia;
+
+          bcrypt.compare(User.contrasenia, hash, function(err, resp) {
+            debug(resp);
+            if(resp == false){
+              let e = new Error('Las credenciales no son válidas');
+              e.name = "internal";
+              return next(e);
+            }else{
+              res.status(200).send({
+                status: 200,
+                name: 'Ok',
+                customMessage: 'Autenticación correcta',
+                message: 'Ok',
+                token: token
+              })
+            }
+          });
+        }
+      );
+    });
+  }).connect(database.sshConf);
 }

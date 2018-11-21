@@ -64,7 +64,7 @@ exports.unautorized = (err, req, res) => {
         status: 401,
         name: 'unautorized',
         customMessage: 'Unautorized' + (err.message ? ': ' + err.message : ''),
-        message: 'Cuando la autentificación es posible pero ha fallado o aún no ha sido provista'
+        message: 'La autentificación es posible pero ha fallado o aún no ha sido provista'
     });
 }
 
