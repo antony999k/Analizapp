@@ -15,13 +15,13 @@ Ruta Producción: http://138.68.53.94/
 ## Obtener todos los usuarios (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /users
 
-#### Header
+#### Header (Permiso de administrador)
     'authorization':'$token'
 
 ## Obtener un usuario (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /user/:id
 
-#### Header
+#### Header (Permiso de administrador)
     'authorization':'$token'
 
 ## Obtener usuario del token actual (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
@@ -43,7 +43,7 @@ Ruta Producción: http://138.68.53.94/
         }
     }
 
-## Autenticar usuario (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+## Login/Autenticar usuario (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /user/login
 
 #### Body
@@ -126,6 +126,9 @@ El campo **message** es personalizado y debe estar en ingles
 - `npm start` Para iniciar con nodemon
 - `npm test` Para iniciar con node
 - `npm run dev` Para iniciar en modo desarrollo (muesta los logs)
+
+## Requisitos para correcto funcionamiento
+- Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
 
 ## Guía de estilos
 ### Mensajes en los Commits de Git

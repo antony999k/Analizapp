@@ -238,3 +238,8 @@ exports.loginUser = (req, res, next) => {
     });
   }).connect(database.sshConf);
 }
+
+//Recuperar cuenta ***************************************************************
+exports.recovery = (req, res, next) =>{
+  res.send("jeloww")
+}

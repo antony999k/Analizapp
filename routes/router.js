@@ -23,6 +23,8 @@ module.exports = (() => {
   router.post('/user', userController.registerUser);
   //Login Usuario
   router.post('/user/login', userController.loginUser);
+  //Recuperar cuenta (contraseña olvidadada)
+  router.post('/user/recovery', userController.recovery);
 
   // General =========================================================
   //Maneja /
