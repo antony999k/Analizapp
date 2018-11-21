@@ -219,7 +219,6 @@ exports.loginUser = (req, res, next) => {
           hash = finalResults.contrasenia;
 
           bcrypt.compare(User.contrasenia, hash, function(err, resp) {
-            debug(resp);
             if(resp == false){
               let e = new Error('Las credenciales no son válidas');
               e.name = "internal";

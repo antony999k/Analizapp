@@ -68,7 +68,6 @@ exports.isAuth = (req, res, next) => {
           }
 
           bcrypt.compare(tokenDecoded.contrasenia, hash, function(err, res) {
-            console.log(res);
             if (res == false) {
               let e = new Error('Las credenciales no son válidas');
               e.name = "internal";
