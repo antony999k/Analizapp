@@ -110,7 +110,7 @@ exports.isAuthAdmin = (req, res, next) => {
           if(privilegio == "admin"){
             return next();
           }else{
-            let e = new Error('La ruta funciona correctamente pero no cuentas con los permisos necesarios');
+            let e = new Error('La ruta funciona correctamente pero no cuentas con los permisos de administrador');
             e.name = "forbidden";
             return next(e);
           }

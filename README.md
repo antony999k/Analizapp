@@ -15,11 +15,22 @@ Ruta Producción: http://138.68.53.94/
 ## Obtener todos los usuarios (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /users
 
+#### Header
+    'authorization':'$token'
+
 ## Obtener un usuario (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /user/:id
 
+#### Header
+    'authorization':'$token'
 
-## Agregar un usuario (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+## Obtener usuario del token actual (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /user/me
+
+#### Header
+    'authorization':'$token'
+
+## Registrar/Agregar un usuario (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /user/
 
 #### Body
