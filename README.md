@@ -74,7 +74,8 @@ Ruta Producción: http://138.68.53.94/
 
 ### Body
     {
-    "token" : "$mailToken"
+    "token" : "$mailToken",
+    "contrasenia" : "$nuevaContraseña"
     }
 
 ## Revisar estado del api (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
