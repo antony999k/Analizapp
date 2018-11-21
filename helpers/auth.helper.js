@@ -1,6 +1,7 @@
 //helpers/auth.helper.js
 'use strict'
 const jwt = require('jsonwebtoken');
+const codeGenerator = require('node-code-generator');
 
 //Encriptar token para sesiones de un día
 exports.createToken = function(user) {
@@ -18,4 +19,13 @@ exports.createToken30 = function(user) {
 exports.decodeToken = function(token) {
   let decoded = jwt.verify(token, process.env.SECRET_KEY)
   return decoded
+}
+
+//Crear token para correo
+exports.createMailToken = function() {
+  let generator = new CodeGenerator();
+  let pattern = '######';
+  let howMany = 1;
+  let options = {};
+  return generator.generateCodes(pattern, howMany, options);
 }

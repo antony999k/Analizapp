@@ -8,7 +8,7 @@ const SSH2Client = require('ssh2').Client;
 const bcrypt = require('bcrypt');
 const saltRounds = 13;
 
-//Obtener todos los Usuarios ***************************************************************
+//Obtener todos los Usuarios ********************************************************************************
 exports.getUsers = (req, res, next) => {
   let ssh = new SSH2Client();
   ssh.on('ready', function() {
@@ -26,7 +26,7 @@ exports.getUsers = (req, res, next) => {
   }).connect(database.sshConf);
 }
 
-//Obtener un usuario ***************************************************************
+//Obtener un usuario ********************************************************************************
 exports.getUser = (req, res, next) => {
   if (req.params.id == null || req.params.id == undefined) {
     let e = new Error('Se debe ingresar un id');
@@ -64,7 +64,7 @@ exports.getUser = (req, res, next) => {
   }).connect(database.sshConf);
 }
 
-//Obtener mi usuario ***************************************************************
+//Obtener mi usuario ********************************************************************************
 exports.getMyUser = (req, res, next) => {
   if (!req.headers.authorization) {
     let e = new Error('No tienes permiso para acceder a este contenido');
@@ -122,7 +122,7 @@ exports.getMyUser = (req, res, next) => {
   }).connect(database.sshConf);
 }
 
-//Registrar un usuario ***************************************************************
+//Registrar un usuario ********************************************************************************
 exports.registerUser = (req, res, next) => {
   if (req.body.usuario == null || req.body.usuario == undefined) {
     let e = new Error('Se debe ingresar un usuario');
@@ -149,6 +149,8 @@ exports.registerUser = (req, res, next) => {
     UsuarioShort.contrasenia = hash;
   });
 
+  Usuario.diaRegistro = new Date().toISOString().slice(0, 10).replace('T', ' ');
+
   let ssh = new SSH2Client();
   ssh.on('ready', function() {
     ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
@@ -156,7 +158,7 @@ exports.registerUser = (req, res, next) => {
       database.sqlConf.stream = stream;
       let db = mysql2.createConnection(database.sqlConf);
       db.query(
-        'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\')',
+        'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\')',
         function(err, results, fields) {
           if (err) {
             if(err.toString().search('Duplicate entry')){
@@ -182,7 +184,7 @@ exports.registerUser = (req, res, next) => {
   }).connect(database.sshConf);
 }
 
-//ingresar con un usuario ***************************************************************
+///LOGIN/ ingresar con un usuario ********************************************************************************
 exports.loginUser = (req, res, next) => {
   if ((req.body.correo == null || req.body.correo == undefined) || (req.body.contrasenia == null || req.body.contrasenia == undefined)) {
     let e = new Error('Se debe ingresar correo y contraseña');
@@ -239,7 +241,28 @@ exports.loginUser = (req, res, next) => {
   }).connect(database.sshConf);
 }
 
-//Recuperar cuenta ***************************************************************
+//Recuperar cuenta ( Mandar correo ) ********************************************************************************
 exports.recovery = (req, res, next) =>{
-  res.send("jeloww")
+  if (req.body.correo == null || req.body.correo == undefined) {
+    let e = new Error('Se debe ingresar un correo');
+    e.name = "badRequest";
+    return next(e);
+  }
+
+  let mailToken = "";
+
+  //Crear un mailToken
+  try {
+    mailToken = authHelper.createMailToken();
+  } catch (err) {
+    let e = new Error('No se pudo verificar la información del usuario');
+    e.name = "internal";
+    return next(e);
+  }
+  res.send({"mailToken" : mailToken})
+}
+
+//Recuperar cuenta ( Cambiar contraseña ) ********************************************************************************
+exports.changePassword = (req, res, next)=>{
+  res.send("jeloww2")
 }

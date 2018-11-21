@@ -61,6 +61,22 @@ Ruta Producción: http://138.68.53.94/
       "token":"$token",
     }
 
+## Contraseña olvidada / Mandar correo (POST) ![#ea4848](https://placehold.it/15/ea4848/000000?text=+)
+    /user/recovery
+
+### Body
+    {
+    "correo" : "$correo"
+    }
+
+## Contraseña olvidada / Cambiar contraseña (POST) ![#ea4848](https://placehold.it/15/ea4848/000000?text=+)
+    /user/change-password
+
+### Body
+    {
+    "correo" : "$correo"
+    }
+
 ## Revisar estado del api (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /health
 
@@ -127,8 +143,10 @@ El campo **message** es personalizado y debe estar en ingles
 - `npm test` Para iniciar con node
 - `npm run dev` Para iniciar en modo desarrollo (muesta los logs)
 
-## Requisitos para correcto funcionamiento
-- Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
+## Pasos para correcto funcionamiento
+1. Descargar el repositorio
+2. Instalar paquetes de npm
+3. Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
 
 ## Guía de estilos
 ### Mensajes en los Commits de Git
