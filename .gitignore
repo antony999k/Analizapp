@@ -71,3 +71,7 @@ typings/
 
 # Serverless directories
 .serverless
+
+user_data/analyzed_images/*
+
+user_data/images/*

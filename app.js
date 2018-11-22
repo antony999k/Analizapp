@@ -8,6 +8,7 @@ const compression = require('compression');
 const helmet = require('helmet');
 const path = require('path');
 const debug = require('debug')('dev');
+const child_process = require("child_process")
 require('dotenv').config({path: __dirname + '/.env'})
 //Archivos
 const router = require('./routes/router');
@@ -18,6 +19,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(compression()); //Hace el api más ligera y más rápida
 app.use(helmet()); // Añade seguridad a las cabezaras http
+
+// Corre servidor de flask para analisar imagenes
+child_process.spawn("python", ["./analyze_server.py"], {stdio : "inherit"})
 
 // DB  =========================================================
 
