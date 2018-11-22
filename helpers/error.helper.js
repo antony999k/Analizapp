@@ -71,7 +71,7 @@ exports.unautorized = (err, req, res) => {
 exports.forbidden = (err, req, res) => {
     res.status(403).send({
         status: 403,
-        name: 'Forbidden',
+        name: 'forbidden',
         customMessage: 'Forbidden' + (err.message ? ': ' + err.message : ''),
         message: 'No se tienen los permisos necesarios'
     });
