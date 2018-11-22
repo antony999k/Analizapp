@@ -1,29 +1,18 @@
 //controllers/user.controller.js
 'use strict';
 const debug = require('debug')('dev');
-const database = require('../db/database');
 const authHelper = require('../helpers/auth.helper');
-const mysql2 = require('mysql2');
-const SSH2Client = require('ssh2').Client;
 const bcrypt = require('bcrypt');
 const saltRounds = 13;
+const db = require('./database.controller');
 
 //Obtener todos los Usuarios ********************************************************************************
 exports.getUsers = (req, res, next) => {
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'SELECT * FROM `Usuarios`',
-        function(err, results, fields) {
-          res.send(results)
-        }
-      );
-    });
-  }).connect(database.sshConf);
+  db.query(
+    'SELECT * FROM `Usuarios`',
+    function(err, results, fields) {
+      res.send(results)
+  });
 }
 
 //Obtener un usuario ********************************************************************************
@@ -36,32 +25,24 @@ exports.getUser = (req, res, next) => {
 
   let id = req.params.id;
 
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'SELECT * FROM Usuarios WHERE id=' + id,
-        function(err, results, fields) {
-          if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-          }
-          if (results.length == 0) {
-            let e = new Error('Usuario no encontrado');
-            e.name = "notFound";
-            return next(e);
-          }
-          //Convierte el array en objeto
-          let finalResults = results[0]
-          res.status(200).send(finalResults);
-        }
-      );
-    });
-  }).connect(database.sshConf);
+  db.query(
+    'SELECT * FROM Usuarios WHERE id=' + id,
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
+      }
+      if (results.length == 0) {
+        let e = new Error('Usuario no encontrado');
+        e.name = "notFound";
+        return next(e);
+      }
+      //Convierte el array en objeto
+      let finalResults = results[0]
+      res.status(200).send(finalResults);
+    }
+  );
 }
 
 //Obtener mi usuario ********************************************************************************
@@ -92,34 +73,27 @@ exports.getMyUser = (req, res, next) => {
 
   let myUser = "";
 
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
-        function(err, results, fields) {
-          if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-          }
-          if (results.length == 0) {
-            let e = new Error('Usuario no encontrado');
-            e.name = "notFound";
-            return next(e);
-          }
-          //Convierte el array en objeto
-          let finalResults = results[0]
-          myUser = finalResults;
+  db.query(
+    'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
+      }
+      if (results.length == 0) {
+        let e = new Error('Usuario no encontrado');
+        e.name = "notFound";
+        return next(e);
+      }
+      //Convierte el array en objeto
+      let finalResults = results[0]
+      myUser = finalResults;
 
-          res.send(finalResults)
-        }
-      );
-    });
-  }).connect(database.sshConf);
+      res.send(finalResults)
+    }
+  );
+
 }
 
 //Registrar un usuario ********************************************************************************
@@ -151,37 +125,29 @@ exports.registerUser = (req, res, next) => {
 
   Usuario.diaRegistro = new Date().toISOString().slice(0, 10).replace('T', ' ');
 
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\')',
-        function(err, results, fields) {
-          if (err) {
-            if(err.toString().search('Duplicate entry')){
-              let e = new Error("Ya existe un usuario con ese correo");
-              e.name = "conflict";
-              return next(e);
-            }else{
-              let e = new Error(err);
-              e.name = "internal";
-              return next(e);
-            }
-          }
-          res.status(201).send({
-            status: 201,
-            name: 'Created',
-            customMessage: 'El usuario fue registrado con exito',
-            message: 'Recurso creado',
-            token: token
-          });
+  db.query(
+    'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\')',
+    function(err, results, fields) {
+      if (err) {
+        if(err.toString().search('Duplicate entry')){
+          let e = new Error("Ya existe un usuario con ese correo");
+          e.name = "conflict";
+          return next(e);
+        }else{
+          let e = new Error(err);
+          e.name = "internal";
+          return next(e);
         }
-      );
-    });
-  }).connect(database.sshConf);
+      }
+      res.status(201).send({
+        status: 201,
+        name: 'Created',
+        customMessage: 'El usuario fue registrado con exito',
+        message: 'Recurso creado',
+        token: token
+      });
+    }
+  );
 }
 
 ///LOGIN/ ingresar con un usuario ********************************************************************************
@@ -197,48 +163,40 @@ exports.loginUser = (req, res, next) => {
 
   let token = authHelper.createToken(User);
 
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'SELECT contrasenia FROM Usuarios WHERE correo=\'' + User.correo + '\'',
-        function(err, results, fields) {
-          if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-          }
-          if (results.length == 0) {
-            let e = new Error('Usuario no encontrado');
-            e.name = "notFound";
-            return next(e);
-          }
-          //Convierte el array en objeto
-          let finalResults = results[0]
-          hash = finalResults.contrasenia;
+  db.query(
+    'SELECT contrasenia FROM Usuarios WHERE correo=\'' + User.correo + '\'',
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
+      }
+      if (results.length == 0) {
+        let e = new Error('Usuario no encontrado');
+        e.name = "notFound";
+        return next(e);
+      }
+      //Convierte el array en objeto
+      let finalResults = results[0]
+      hash = finalResults.contrasenia;
 
-          bcrypt.compare(User.contrasenia, hash, function(err, resp) {
-            if(resp == false){
-              let e = new Error('Las credenciales no son válidas');
-              e.name = "internal";
-              return next(e);
-            }else{
-              res.status(200).send({
-                status: 200,
-                name: 'Ok',
-                customMessage: 'Autenticación correcta',
-                message: 'Ok',
-                token: token
-              })
-            }
-          });
+      bcrypt.compare(User.contrasenia, hash, function(err, resp) {
+        if(resp == false){
+          let e = new Error('Las credenciales no son válidas');
+          e.name = "internal";
+          return next(e);
+        }else{
+          res.status(200).send({
+            status: 200,
+            name: 'Ok',
+            customMessage: 'Autenticación correcta',
+            message: 'Ok',
+            token: token
+          })
         }
-      );
-    });
-  }).connect(database.sshConf);
+      });
+    }
+  );
 }
 
 //Recuperar cuenta ( Mandar correo ) ********************************************************************************

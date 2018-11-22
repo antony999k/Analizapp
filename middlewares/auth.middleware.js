@@ -3,9 +3,7 @@
 const authHelper = require('../helpers/auth.helper');
 const bcrypt = require('bcrypt');
 const debug = require('debug')('dev');
-const mysql2 = require('mysql2');
-const SSH2Client = require('ssh2').Client;
-const database = require('../db/database');
+const db = require('./database.controller');
 
 exports.isAuth = (req, res, next) => {
   //Revisa si authorization esta en la cabezera
@@ -37,85 +35,69 @@ exports.isAuth = (req, res, next) => {
 
   let hash = "";
 
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'SELECT contrasenia FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
-        function(err, results, fields) {
-          if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-          }
-          if (results.length == 0) {
-            let e = new Error('Usuario no encontrado');
-            e.name = "notFound";
-            return next(e);
-          }
-          //Convierte el array en objeto
-          let finalResults = results[0]
-          hash = finalResults.contrasenia;
+  db.query(
+    'SELECT contrasenia FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
+      }
+      if (results.length == 0) {
+        let e = new Error('Usuario no encontrado');
+        e.name = "notFound";
+        return next(e);
+      }
+      //Convierte el array en objeto
+      let finalResults = results[0]
+      hash = finalResults.contrasenia;
 
-          //Revisa que el token decodificado contenga un password
-          if (tokenDecoded.contrasenia == undefined || tokenDecoded.contrasenia == null) {
-            let e = new Error('No se pudo verificar el token de usuario');
-            e.name = "internal";
-            return next(e);
-          }
+      //Revisa que el token decodificado contenga un password
+      if (tokenDecoded.contrasenia == undefined || tokenDecoded.contrasenia == null) {
+        let e = new Error('No se pudo verificar el token de usuario');
+        e.name = "internal";
+        return next(e);
+      }
 
-          bcrypt.compare(tokenDecoded.contrasenia, hash, function(err, res) {
-            if (res == false) {
-              let e = new Error('Las credenciales no son válidas');
-              e.name = "internal";
-              return next(e);
-            } else {
-              return next();
-            }
-          });
+      bcrypt.compare(tokenDecoded.contrasenia, hash, function(err, res) {
+        if (res == false) {
+          let e = new Error('Las credenciales no son válidas');
+          e.name = "internal";
+          return next(e);
+        } else {
+          return next();
         }
-      );
-    });
-  }).connect(database.sshConf);
+      });
+    }
+  );
 }
 
 exports.isAuthAdmin = (req, res, next) => {
   let privilegio = "";
-  let ssh = new SSH2Client();
-  ssh.on('ready', function() {
-    ssh.forwardOut('127.0.0.1', 3501, '127.0.0.1', 3306, function(err, stream) {
-      if (err) throw err;
-      database.sqlConf.stream = stream;
-      let db = mysql2.createConnection(database.sqlConf);
-      db.query(
-        'SELECT privilegios FROM Usuarios WHERE correo=\'' + req.global.tokenDecoded.correo + '\'',
-        function(err, results, fields) {
-          if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-          }
-          if (results.length == 0) {
-            let e = new Error('Usuario no encontrado');
-            e.name = "notFound";
-            return next(e);
-          }
-          //Convierte el array en objeto
-          let finalResults = results[0]
-          privilegio = finalResults.privilegios;
+  db.query(
+    'SELECT privilegios FROM Usuarios WHERE correo=\'' + req.global.tokenDecoded.correo + '\'',
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
+      }
+      if (results.length == 0) {
+        let e = new Error('Usuario no encontrado');
+        e.name = "notFound";
+        return next(e);
+      }
+      //Convierte el array en objeto
+      let finalResults = results[0]
+      privilegio = finalResults.privilegios;
 
-          if(privilegio == "admin"){
-            return next();
-          }else{
-            let e = new Error('La ruta funciona correctamente pero no cuentas con los permisos de administrador');
-            e.name = "forbidden";
-            return next(e);
-          }
-        }
-      );
-    });
-  }).connect(database.sshConf);
+      if(privilegio == "admin"){
+        return next();
+      }else{
+        let e = new Error('La ruta funciona correctamente pero no cuentas con los permisos de administrador');
+        e.name = "forbidden";
+        return next(e);
+      }
+    }
+  );
 }
