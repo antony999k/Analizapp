@@ -3,7 +3,7 @@
 const authHelper = require('../helpers/auth.helper');
 const bcrypt = require('bcrypt');
 const debug = require('debug')('dev');
-const db = require('./database.controller');
+const db = require('../controllers/database.controller');
 
 exports.isAuth = (req, res, next) => {
   //Revisa si authorization esta en la cabezera
