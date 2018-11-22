@@ -88,7 +88,6 @@ def analyze():
                 filepath = app.config['UPLOAD_FOLDER']
                 image.save(os.path.join(filepath, filename))
                 peakArea, bottomArea = analyze_image(filepath, filename)
-                data["success"] = True
                 data["results"] = {}
 
                 data["results"]["peakArea"] = peakArea
