@@ -121,33 +121,32 @@ exports.registerUser = (req, res, next) => {
     }
     Usuario.contrasenia = hash;
     UsuarioShort.contrasenia = hash;
-  });
+    Usuario.diaRegistro = new Date().toISOString().slice(0, 10).replace('T', ' ');
 
-  Usuario.diaRegistro = new Date().toISOString().slice(0, 10).replace('T', ' ');
-
-  db.query(
-    'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\')',
-    function(err, results, fields) {
-      if (err) {
-        if(err.toString().search('Duplicate entry')){
-          let e = new Error("Ya existe un usuario con ese correo");
-          e.name = "conflict";
-          return next(e);
-        }else{
-          let e = new Error(err);
-          e.name = "internal";
-          return next(e);
+    db.query(
+      'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\')',
+      function(err, results, fields) {
+        if (err) {
+          if(err.toString().search('Duplicate entry')){
+            let e = new Error("Ya existe un usuario con ese correo");
+            e.name = "conflict";
+            return next(e);
+          }else{
+            let e = new Error(err);
+            e.name = "internal";
+            return next(e);
+          }
         }
+        res.status(201).send({
+          status: 201,
+          name: 'Created',
+          customMessage: 'El usuario fue registrado con exito',
+          message: 'Recurso creado',
+          token: token
+        });
       }
-      res.status(201).send({
-        status: 201,
-        name: 'Created',
-        customMessage: 'El usuario fue registrado con exito',
-        message: 'Recurso creado',
-        token: token
-      });
-    }
-  );
+    );
+  });
 }
 
 ///LOGIN/ ingresar con un usuario ********************************************************************************
