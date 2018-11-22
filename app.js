@@ -20,8 +20,18 @@ app.use(bodyParser.json());
 app.use(compression()); //Hace el api más ligera y más rápida
 app.use(helmet()); // Añade seguridad a las cabezaras http
 
-// Corre servidor de flask para analisar imagenes
-child_process.spawn("python", ["./analyze_server.py"], {stdio : "inherit"})
+// Agrega variables globales del directorio de las imagenes subidas por el usuario
+app.set('UPLOAD_FOLDER', __dirname + "/user_data/images/");
+app.set('ANALYZED_FOLDER', __dirname + "/user_data/analyzed_images/");
+
+console.log(app.get('UPLOAD_FOLDER'));
+
+// Corre servidor de flask para analisar imagenes con los argumentos para los directorios necesarios
+child_process.spawn(
+    "python", 
+    ["./analyze_server.py", app.get('UPLOAD_FOLDER'), app.get('ANALYZED_FOLDER')], 
+    {stdio : "inherit"}
+);
 
 // DB  =========================================================
 

@@ -3,15 +3,12 @@ import os
 import cv2
 import uuid
 import flask
+import argparse
 import numpy as np
 
-UPLOAD_FOLDER = './user_data/images/'
-ANALYZED_FOLDER = './user_data/analyzed_images/'
 ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = flask.Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['ANALYZED_FOLDER'] = ANALYZED_FOLDER
 
 
 def analyze_image(filepath, filename):
@@ -55,11 +52,11 @@ def analyze_image(filepath, filename):
     for c in countoursBottom:
         totalBottom += cv2.contourArea(c)
     
-    print("Area: " + str(total*0.33) + " um^2", "Bottom Area: ", str(totalBottom*0.33))
-
     cv2.imwrite(os.path.join(app.config['ANALYZED_FOLDER'], filename), original)
 
-
+    # print("Area: " + str(total*0.33) + " um^2", "Bottom Area: ", str(totalBottom*0.33))
+    return total*0.33, totalBottom*0.33
+    
 def getBottomContours(image):
     # Up threshold for beter detection of features
     image = cv2.threshold(image, 150, 255, cv2.THRESH_BINARY)[1]
@@ -90,8 +87,14 @@ def analyze():
                 filename = str(uuid.uuid4().hex) + ext
                 filepath = app.config['UPLOAD_FOLDER']
                 image.save(os.path.join(filepath, filename))
-                analyze_image(filepath, filename)
+                peakArea, bottomArea = analyze_image(filepath, filename)
                 data["success"] = True
+                data["results"] = {}
+
+                data["results"]["peakArea"] = peakArea
+                data["results"]["bottomArea"] = bottomArea
+                data["results"]["filename"] = filename
+                
             except Exception as e:
                 data['error'] = str(e)
         else:
@@ -103,5 +106,13 @@ def analyze():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Flask server that analyzes microscopic metal images')
+    parser.add_argument('upload_folder',help='Path to original images')
+    parser.add_argument('analyzed_folder',help='Path to analyzed images')
+    args = parser.parse_args()
+
+    app.config['UPLOAD_FOLDER'] = args.upload_folder
+    app.config['ANALYZED_FOLDER'] = args.analyzed_folder
+    
     app.run(debug=False)
 
