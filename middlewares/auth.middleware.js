@@ -14,7 +14,7 @@ exports.isAuth = (req, res, next) => {
   }
 
   let token = req.headers.authorization;
-
+  
   authHelper.validateRequest(token, function(err, tokenDecoded){
     if (err) return next(err);
     res.locals.tokenDecoded = tokenDecoded;

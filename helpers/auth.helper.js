@@ -16,22 +16,22 @@ exports.createToken30 = function(user) {
 }
 
 //Desencriptar token para sesiones
-exports.decodeToken = function(token) {
+var decodeToken = function(token) {
   let decoded = jwt.verify(token, process.env.SECRET_KEY)
   return decoded
 }
 
-
 exports.validateRequest = function(token, callback){
   try {
-    tokenDecoded = authHelper.decodeToken(token);
+    let tokenDecoded = decodeToken(token);
     callback(null, tokenDecoded);
   } catch (err) {
+    let e;
     if (err.message == "jwt expired") {
-      let e = new Error('El token ah expirado');
+      e = new Error('El token ah expirado');
       e.name = "unautorized";
     } else {
-      let e = new Error('No se pudo verificar la información del usuario');
+      e = new Error('No se pudo verificar la información del usuario');
       e.name = "internal";
     }
     callback(e, null);
