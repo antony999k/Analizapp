@@ -6,6 +6,7 @@ const router = express.Router();
 const globalController = require('../controllers/global.controller');
 const userController = require('../controllers/user.controller');
 const imageController = require('../controllers/image.controller');
+const metalController = require('../controllers/metal.controller');
 //Rutas de middlewares
 const authMiddleware = require('../middlewares/auth.middleware');
 //Rutas de helpers
@@ -33,6 +34,14 @@ module.exports = (() => {
   router.get('/images/get/:id', authMiddleware.isAuth,imageController.getImage);
   router.get('/images/me', authMiddleware.isAuth,imageController.getImages);
   router.post('/analyze', authMiddleware.isAuth ,imageController.analyzeImage);
+
+  // Metals ==========================================================
+  router.get('/metal/get/:id', authMiddleware.isAuth ,metalController.getMetal);
+  router.post('/metal/new', authMiddleware.isAuth ,metalController.newMetal);
+  router.put('/metal/update/:id', authMiddleware.isAuth ,metalController.updateMetal);
+  router.delete('/metal/delete/:id', authMiddleware.isAuth ,metalController.deleteMetal);
+  
+  
 
 
   // General =========================================================
