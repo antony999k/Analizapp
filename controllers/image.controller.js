@@ -7,6 +7,7 @@ const db = require('./database.controller');
 exports.getImages = (req, res, next) => {
     db.query(
         'SELECT \
+            i.id as id, \
             m.nombre as metal, \
             e.nombre as experimento, \
             i.tiempo_minutos as tiempo, \
