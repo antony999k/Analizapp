@@ -2,33 +2,29 @@
 const fs = require('fs');
 const request = require('request');
 const db = require('./database.controller');
+const imageHelper = require('../helpers/image.helper');
 
+exports.getImage = (req, res, next) => {
+    let query = imageHelper.queryBy('i.id = '+req.params.id);
+    db.query(query, (err, results, fields) => {
+        if (err) {
+            let e = new Error(err);
+            e.name = "internal";
+            return next(e);
+        }
+        if (results.length == 0) {
+            let e = new Error('Imagen no encontrada');
+            e.name = "notFound";
+            return next(e);
+          }
+        res.send(results);
+    });
+}
 
 exports.getImages = (req, res, next) => {
-    db.query(
-        'SELECT \
-            i.id as id, \
-            m.nombre as metal, \
-            e.nombre as experimento, \
-            i.tiempo_minutos as tiempo, \
-            i.grados as grados, \
-            i.area_picos as area_picos, \
-            i.area_abajo as area_abajo, \
-            i.ruta_original as ruta_original, \
-            i.ruta_analisis as ruta_analisis \
-        FROM \
-            Imagen i \
-        LEFT JOIN \
-            Metal m \
-        ON \
-            m.id = i.metal_id \
-        LEFT JOIN \
-            Experimento e \
-        ON \
-            e.id = i.experimento_id \
-        WHERE \
-            i.usuario_id = '+res.locals.tokenDecoded.id+';',
-    function(err, results, fields) {
+    let query = imageHelper.queryBy('i.usuario_id = '+res.locals.tokenDecoded.id);
+    
+    db.query(query, (err, results, fields) => {
         if (err) {
             let e = new Error(err);
             e.name = "internal";
@@ -50,31 +46,13 @@ exports.analyzeImage = (req, res, next) => {
         if(data["error"] != null || !validate_image_form(data.form)) return res.status(500).send({
             "error" : "Invalid format!"
         });
-        db.query(
-            'INSERT INTO Imagen( \
-                metal_id, \
-                usuario_id, \
-                experimento_id, \
-                descripcion, \
-                tiempo_minutos, \
-                grados, \
-                area_picos, \
-                area_abajo, \
-                ruta_original, \
-                ruta_analisis) \
-            VALUES ( \
-                ' + data.form.metal_id + ', \
-                ' + res.locals.tokenDecoded.id + ', \
-                ' + data.form.experimento_id + ', \
-                "' + data.form.descripcion + '", \
-                ' + data.form.tiempo_minutos + ', \
-                ' + data.form.grados + ', \
-                ' + data.results.peakArea + ', \
-                ' + data.results.bottomArea + ', \
-                "' + req.app.get('UPLOAD_FOLDER') + data.results.filename + '", \
-                "' + req.app.get('ANALYZED_FOLDER') + data.results.filename + '");\
-            SELECT LAST_INSERT_ID();',
-        function(err, results, fields) {
+        data.usuario_id = res.locals.tokenDecoded.id;
+        data.upload_folder = req.app.get('UPLOAD_FOLDER');
+        data.analyzed_folder = req.app.get('ANALYZED_FOLDER');
+        
+        let query = imageHelper.insertQuery(data);
+
+        db.query(query, function(err, results, fields) {
             if (err){
                 let e = new Error(err);
                 e.name = "internal";
