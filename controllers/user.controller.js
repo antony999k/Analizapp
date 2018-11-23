@@ -54,45 +54,33 @@ exports.getMyUser = (req, res, next) => {
   }
 
   let token = req.headers.authorization;
-  let tokenDecoded;
+  
+  authHelper.validateRequest(token, function(err, tokenDecoded){
+    if (err) return next(err);
 
-  //Decodifica el token
-  try {
-    tokenDecoded = authHelper.decodeToken(token);
-  } catch (err) {
-    if (err.message == "jwt expired") {
-      let e = new Error('El token ah expirado');
-      e.name = "unautorized";
-      return next(e);
-    } else {
-      let e = new Error('No se pudo verificar la información del usuario');
-      e.name = "internal";
-      return next(e);
-    }
-  }
-
-  let myUser = "";
-
-  db.query(
-    'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
-    function(err, results, fields) {
-      if (err) {
-        let e = new Error(err);
-        e.name = "internal";
-        return next(e);
+    db.query(
+      'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
+      function(err, results, fields) {
+        if (err) {
+          let e = new Error(err);
+          e.name = "internal";
+          return next(e);
+        }
+        if (results.length == 0) {
+          let e = new Error('Usuario no encontrado');
+          e.name = "notFound";
+          return next(e);
+        }
+        //Convierte el array en objeto
+        let finalResults = results[0]
+    
+        res.send(finalResults)
       }
-      if (results.length == 0) {
-        let e = new Error('Usuario no encontrado');
-        e.name = "notFound";
-        return next(e);
-      }
-      //Convierte el array en objeto
-      let finalResults = results[0]
-      myUser = finalResults;
+    );
+  
+  });
 
-      res.send(finalResults)
-    }
-  );
+  
 
 }
 

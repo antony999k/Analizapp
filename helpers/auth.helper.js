@@ -21,6 +21,23 @@ exports.decodeToken = function(token) {
   return decoded
 }
 
+
+exports.validateRequest = function(token, callback){
+  try {
+    tokenDecoded = authHelper.decodeToken(token);
+    callback(null, tokenDecoded);
+  } catch (err) {
+    if (err.message == "jwt expired") {
+      let e = new Error('El token ah expirado');
+      e.name = "unautorized";
+    } else {
+      let e = new Error('No se pudo verificar la información del usuario');
+      e.name = "internal";
+    }
+    callback(e, null);
+  }
+}
+
 //Crear token para correo
 exports.createMailToken = function() {
   let generator = new codeGenerator();
