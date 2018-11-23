@@ -24,7 +24,6 @@ app.use(helmet()); // Añade seguridad a las cabezaras http
 app.set('UPLOAD_FOLDER', __dirname + "/user_data/images/");
 app.set('ANALYZED_FOLDER', __dirname + "/user_data/analyzed_images/");
 
-console.log(app.get('UPLOAD_FOLDER'));
 
 // Corre servidor de flask para analisar imagenes con los argumentos para los directorios necesarios
 child_process.spawn(
