@@ -76,29 +76,27 @@ def allowed_file(filename):
 @app.route("/analyze", methods=["POST"])
 def analyze():
     data = {"success": False, "error": None}
-    # ensure an image was properly uploaded to our endpoint
-    if flask.request.method == "POST":
-        image = flask.request.files["image"]
-        if image.filename == '':
-            data['error'] = 'No selected file'
-        ext = allowed_file(image.filename)
-        if image and ext:
-            try:
+    try:
+        # ensure an image was properly uploaded to our endpoint
+        if flask.request.method == "POST":
+            image = flask.request.files["image"]
+            if image.filename == '':
+                data['error'] = 'No selected file'
+            ext = allowed_file(image.filename)
+            if image and ext:
                 filename = str(uuid.uuid4().hex) + ext
                 filepath = app.config['UPLOAD_FOLDER']
                 image.save(os.path.join(filepath, filename))
                 peakArea, bottomArea = analyze_image(filepath, filename)
                 data["results"] = {}
-
                 data["results"]["peakArea"] = peakArea
                 data["results"]["bottomArea"] = bottomArea
                 data["results"]["filename"] = filename
-                
-            except Exception as e:
-                data['error'] = str(e)
-        else:
-            data['error'] = 'Invalid image'
-
+            else:
+                data['error'] = 'Invalid image'
+    except Exception as e:
+        data['error'] = str(e)
+    
     return flask.jsonify(data)
 
 
