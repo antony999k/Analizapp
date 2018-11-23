@@ -46,41 +46,26 @@ exports.getUser = (req, res, next) => {
 }
 
 //Obtener mi usuario ********************************************************************************
-exports.getMyUser = (req, res, next) => {
-  if (!req.headers.authorization) {
-    let e = new Error('No tienes permiso para acceder a este contenido');
-    e.name = "forbidden";
-    return next(e);
-  }
-
-  let token = req.headers.authorization;
-  
-  authHelper.validateRequest(token, function(err, tokenDecoded){
-    if (err) return next(err);
-
-    db.query(
-      'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + tokenDecoded.correo + '\'',
-      function(err, results, fields) {
-        if (err) {
-          let e = new Error(err);
-          e.name = "internal";
-          return next(e);
-        }
-        if (results.length == 0) {
-          let e = new Error('Usuario no encontrado');
-          e.name = "notFound";
-          return next(e);
-        }
-        //Convierte el array en objeto
-        let finalResults = results[0]
-    
-        res.send(finalResults)
+exports.getMyUser = (req, res, next) => {  
+  db.query(
+    'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + res.locals.tokenDecoded.correo + '\'',
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
       }
-    );
+      if (results.length == 0) {
+        let e = new Error('Usuario no encontrado');
+        e.name = "notFound";
+        return next(e);
+      }
+      //Convierte el array en objeto
+      let finalResults = results[0]
   
-  });
-
-  
+      res.send(finalResults)
+    }
+  );
 
 }
 
@@ -126,10 +111,8 @@ exports.registerUser = (req, res, next) => {
           name: 'Created',
           customMessage: 'El usuario fue registrado con exito',
           message: 'Recurso creado',
-          token: authHelper.createToken({"correo": Usuario.correo, "id": results[0]["insertId"]})
+          token: authHelper.createToken({"correo": Usuario.correo, "id": results[0]["insertId"], "admin": false})
         });
-
-
       }
     );
   });
@@ -146,7 +129,7 @@ exports.loginUser = (req, res, next) => {
   let hash = "";
 
   db.query(
-    'SELECT id, contrasenia FROM Usuarios WHERE correo=\'' + req.body.correo + '\'',
+    'SELECT id, privilegios, contrasenia FROM Usuarios WHERE correo=\'' + req.body.correo + '\'',
     function(err, results, fields) {
       if (err) {
         let e = new Error(err);
@@ -161,6 +144,11 @@ exports.loginUser = (req, res, next) => {
       //Convierte el array en objeto
       let finalResults = results[0]
       hash = finalResults.contrasenia;
+      let admin = false;
+
+      if(finalResults.privilegios == "admin"){
+        admin = true;
+      }
 
 
       bcrypt.compare(req.body.contrasenia, hash, function(err, resp) {
@@ -174,7 +162,7 @@ exports.loginUser = (req, res, next) => {
             name: 'Ok',
             customMessage: 'Autenticación correcta',
             message: 'Ok',
-            token: authHelper.createToken({"correo": req.body.correo, "id": finalResults.id })
+            token: authHelper.createToken({"correo": req.body.correo, "id": finalResults.id, "admin": admin })
           })
         }
       });
