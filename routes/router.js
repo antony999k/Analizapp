@@ -5,6 +5,7 @@ const router = express.Router();
 //Rutas de controladores
 const globalController = require('../controllers/global.controller');
 const userController = require('../controllers/user.controller');
+const imageController = require('../controllers/image.controller');
 //Rutas de middlewares
 const authMiddleware = require('../middlewares/auth.middleware');
 //Rutas de helpers
@@ -27,6 +28,10 @@ module.exports = (() => {
   router.post('/user/recovery', userController.recovery);
   //Recuperar cuenta ( Cambiar contraseña )
   router.post('/user/change-password', userController.changePassword);
+
+  // Analisis de Imagenes ============================================
+  router.post('/analyze', authMiddleware.isAuth ,imageController.analyzeImage);
+
 
   // General =========================================================
   //Maneja /

@@ -12,6 +12,23 @@ Ruta Desarrollo: http://127.0.0.1:3500/
 
 Ruta Producción: http://138.68.53.94/
 
+## Analizar imagen (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /analyze
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+#### Body
+    {
+        "metal_id": "$metal_id"
+        "experimento_id": "$experimento_id"
+        "descripcion": "$descripcion"
+        "tiempo_minutos": "$tiempo_minutos"
+        "grados": "$grados"
+        "image": "$image_file"
+    }
+
+
 ## Obtener todos los usuarios (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /users
 
