@@ -47,3 +47,7 @@ create table Imagen (
     foreign key (usuario_id) references Usuarios(id),
     foreign key (experimento_id) references Experimento(id)
 );
+
+-- Testing Queries
+-- insert into Metal(nombre, descripcion) values ("Vanadio", "Es un metal ductil, blando y poco abundante.");
+-- insert into Experimento(nombre, descripcion, usuario_id) values ("Experimento 1", "Pruebas Locales", 1);
