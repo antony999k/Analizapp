@@ -108,10 +108,7 @@ exports.registerUser = (req, res, next) => {
     return next(e);
   }
 
-  let Usuario = req.body.usuario;
-  let UsuarioShort = { "correo":  Usuario.correo, "contrasenia":Usuario.contrasenia}
-
-  let token = authHelper.createToken(UsuarioShort);
+  let Usuario = req.body.usuario;  
 
   bcrypt.hash(req.body.usuario.contrasenia, saltRounds, function(err, hash) {
     if (err) {
@@ -120,11 +117,10 @@ exports.registerUser = (req, res, next) => {
       return next(e);
     }
     Usuario.contrasenia = hash;
-    UsuarioShort.contrasenia = hash;
     Usuario.diaRegistro = new Date().toISOString().slice(0, 10).replace('T', ' ');
 
     db.query(
-      'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\')',
+      'INSERT INTO Usuarios (nombre, apellido, correo, contrasenia, diaRegistro) VALUES (\'' + Usuario.nombre + '\',\'' + Usuario.apellido + '\',\'' + Usuario.correo + '\',\'' + Usuario.contrasenia + '\',\'' + Usuario.diaRegistro + '\');SELECT LAST_INSERT_ID();',
       function(err, results, fields) {
         if (err) {
           if(err.toString().search('Duplicate entry')){
@@ -142,8 +138,10 @@ exports.registerUser = (req, res, next) => {
           name: 'Created',
           customMessage: 'El usuario fue registrado con exito',
           message: 'Recurso creado',
-          token: token
+          token: authHelper.createToken({"correo": Usuario.correo, "id": results[0]["insertId"]})
         });
+
+
       }
     );
   });
@@ -157,13 +155,10 @@ exports.loginUser = (req, res, next) => {
     return next(e);
   }
 
-  let User = { "correo": req.body.correo, "contrasenia": req.body.contrasenia }
   let hash = "";
 
-  let token = authHelper.createToken(User);
-
   db.query(
-    'SELECT contrasenia FROM Usuarios WHERE correo=\'' + User.correo + '\'',
+    'SELECT id, contrasenia FROM Usuarios WHERE correo=\'' + req.body.correo + '\'',
     function(err, results, fields) {
       if (err) {
         let e = new Error(err);
@@ -179,7 +174,8 @@ exports.loginUser = (req, res, next) => {
       let finalResults = results[0]
       hash = finalResults.contrasenia;
 
-      bcrypt.compare(User.contrasenia, hash, function(err, resp) {
+
+      bcrypt.compare(req.body.contrasenia, hash, function(err, resp) {
         if(resp == false){
           let e = new Error('Las credenciales no son válidas');
           e.name = "unautorized";
@@ -190,7 +186,7 @@ exports.loginUser = (req, res, next) => {
             name: 'Ok',
             customMessage: 'Autenticación correcta',
             message: 'Ok',
-            token: token
+            token: authHelper.createToken({"correo": req.body.correo, "id": finalResults.id })
           })
         }
       });
