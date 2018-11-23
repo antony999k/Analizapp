@@ -12,7 +12,9 @@ exports.getImages = (req, res, next) => {
             i.tiempo_minutos as tiempo, \
             i.grados as grados, \
             i.area_picos as area_picos, \
-            i.area_abajo as area_abajo \
+            i.area_abajo as area_abajo, \
+            i.ruta_original as ruta_original, \
+            i.ruta_analisis as ruta_analisis \
         FROM \
             Imagen i \
         LEFT JOIN \
