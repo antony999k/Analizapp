@@ -92,6 +92,7 @@ def analyze():
                 data["results"]["peakArea"] = peakArea
                 data["results"]["bottomArea"] = bottomArea
                 data["results"]["filename"] = filename
+                data["form"] = flask.request.form
             else:
                 data['error'] = 'Invalid image'
     except Exception as e:
