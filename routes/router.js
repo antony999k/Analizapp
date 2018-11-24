@@ -37,6 +37,7 @@ module.exports = (() => {
   router.post('/analyze', authMiddleware.isAuth ,imageController.analyzeImage);
 
   // Metales ==========================================================
+  router.get('/metal/all', authMiddleware.isAuth ,metalController.getAllMetals);
   router.get('/metal/get/:id', authMiddleware.isAuth ,metalController.getMetal);
   router.post('/metal/new', authMiddleware.isAuth ,metalController.newMetal);
   router.put('/metal/update/:id', authMiddleware.isAuth ,metalController.updateMetal);

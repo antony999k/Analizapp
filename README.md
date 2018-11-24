@@ -28,6 +28,48 @@ Ruta Producción: http://138.68.53.94/
         "image": "$image_file"
     }
 
+## Obtener todos los metales (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /metal/all
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+## Obtener un metal (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /metal/get/:id
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+## Crear un metal (POST) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /metal/new
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+#### Body
+    {
+      "nombre":"$nombre",
+      "descripcion":"$descripcion"
+    }
+
+## Editar un metal (PUT) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /metal/update/:id
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+#### Body
+    {
+      "nombre":"$nombre",
+      "descripcion":"$descripcion"
+    }
+
+## Borrar un metal (DELETE) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /metal/delete/:id
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
 
 ## Obtener todos los usuarios (GET) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
     /users
