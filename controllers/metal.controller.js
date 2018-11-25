@@ -1,12 +1,12 @@
 'use strict';
 const crudHelper = require('../helpers/crud.helper');
 
-var validate_metal_form = function(form){
+var validate_form = function(form){
     return (typeof form.nombre == 'string' && typeof form.descripcion == 'string')
 }
 
 exports.newMetal = (req, res, next) => {
-    if(!validate_metal_form(req.body)){
+    if(!validate_form(req.body)){
         let e = new Error('Se debe ingresar nombre y descripcion');
         e.name = "badRequest";
         return next(e);
@@ -16,6 +16,11 @@ exports.newMetal = (req, res, next) => {
 }
 
 exports.getMetal = (req, res, next) => {
+    if(isNaN(req.params.id)){
+        let e = new Error(req.params.id +' no es un numero valido');
+        e.name = "badRequest";
+        return next(e);
+    }
     res.locals.query = 'SELECT id, nombre, descripcion from Metal WHERE id =' + req.params.id;
     crudHelper.get(req, res, next);
 }
@@ -26,8 +31,8 @@ exports.getAllMetals = (req, res, next) => {
 }
 
 exports.updateMetal = (req, res, next) => {
-    if(!validate_metal_form(req.body)){
-        let e = new Error('Se debe ingresar nombre y descripcion');
+    if(!validate_form(req.body) || isNaN(req.params.id)){
+        let e = new Error('Formato invalido!');
         e.name = "badRequest";
         return next(e);
     }
@@ -36,6 +41,11 @@ exports.updateMetal = (req, res, next) => {
 }
 
 exports.deleteMetal = (req, res, next) => {
+    if(isNaN(req.params.id)){
+        let e = new Error(req.params.id +' no es un numero valido');
+        e.name = "badRequest";
+        return next(e);
+    }
     res.locals.query = 'DELETE FROM Metal WHERE id =' + req.params.id;
     crudHelper.delete(req, res, next);
 }
