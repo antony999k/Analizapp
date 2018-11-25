@@ -7,7 +7,7 @@ var validate_metal_form = function(form){
 
 exports.newMetal = (req, res, next) => {
     if(!validate_metal_form(req.body)){
-        let e = new Error('Se debe ingresar correo y contraseña');
+        let e = new Error('Se debe ingresar nombre y descripcion');
         e.name = "badRequest";
         return next(e);
     }
@@ -69,7 +69,7 @@ exports.getAllMetals = (req, res, next) => {
 
 exports.updateMetal = (req, res, next) => {
     if(!validate_metal_form(req.body)){
-        let e = new Error('Se debe ingresar correo y contraseña');
+        let e = new Error('Se debe ingresar nombre y descripcion');
         e.name = "badRequest";
         return next(e);
     }
