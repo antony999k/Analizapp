@@ -1,5 +1,5 @@
 'use strict';
-const db = require('./database.controller');
+const crudHelper = require('../helpers/crud.helper');
 
 var validate_metal_form = function(form){
     return (typeof form.nombre == 'string' && typeof form.descripcion == 'string')
@@ -11,60 +11,18 @@ exports.newMetal = (req, res, next) => {
         e.name = "badRequest";
         return next(e);
     }
-    let query = 'INSERT INTO Metal(nombre, descripcion) VALUES ("'+ req.body.nombre +'", "'+ req.body.descripcion+'");SELECT LAST_INSERT_ID();';
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        res.status(201).send({
-            status: 201,
-            name: 'Created',
-            customMessage: 'El metal fue registrado con exito',
-            message: 'Recurso creado',
-            id: results[0]["insertId"]
-        });
-    });
+    res.locals.query = 'INSERT INTO Metal(nombre, descripcion) VALUES ("'+ req.body.nombre +'", "'+ req.body.descripcion+'");';
+    crudHelper.create(req, res, next);
 }
 
 exports.getMetal = (req, res, next) => {
-    let query = 'SELECT id, nombre, descripcion from Metal WHERE id =' + req.params.id;
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        if (results.length == 0) {
-          let e = new Error('Metal no encontrado');
-          e.name = "notFound";
-          return next(e);
-        }
-        res.status(200).send({
-            status: 200,
-            name: 'Ok',
-            message: 'Ok',
-            results: results
-        });
-    })
+    res.locals.query = 'SELECT id, nombre, descripcion from Metal WHERE id =' + req.params.id;
+    crudHelper.get(req, res, next);
 }
 
 exports.getAllMetals = (req, res, next) => {
-    let query = 'SELECT id, nombre, descripcion from Metal';
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        res.status(200).send({
-            status: 200,
-            name: 'Ok',
-            message: 'Ok',
-            results: results
-        });
-    })
+    res.locals.query = 'SELECT id, nombre, descripcion from Metal';
+    crudHelper.get(req, res, next);
 }
 
 exports.updateMetal = (req, res, next) => {
@@ -73,43 +31,12 @@ exports.updateMetal = (req, res, next) => {
         e.name = "badRequest";
         return next(e);
     }
-    let query = 'UPDATE Metal SET nombre = "'+req.body.nombre+'" , descripcion = "'+req.body.descripcion+'"  WHERE id =' + req.params.id;
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        res.status(200).send({
-            status: 200,
-            name: 'Ok',
-            customMessage: 'El metal fue editado correctamente',
-            message: 'Ok'
-        });
-
-    })
+    res.locals.query = 'UPDATE Metal SET nombre = "'+req.body.nombre+'" , descripcion = "'+req.body.descripcion+'"  WHERE id =' + req.params.id;
+    crudHelper.update(req, res, next);
 }
 
 exports.deleteMetal = (req, res, next) => {
-    let query = 'DELETE FROM Metal WHERE id =' + req.params.id;
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        res.status(200).send({
-            status: 200,
-            name: 'Ok',
-            customMessage: 'El metal fue borrado exitosamente',
-            message: 'Ok'
-        });
-    })
+    res.locals.query = 'DELETE FROM Metal WHERE id =' + req.params.id;
+    crudHelper.delete(req, res, next);
 }
 
-// create table Metal(
-//     id int not null AUTO_INCREMENT,
-//     nombre varchar(100) not null,
-//     descripcion varchar(200) default '',
-//     primary key (id)
-// );
