@@ -44,6 +44,7 @@ module.exports = (() => {
   router.delete('/metal/delete/:id', authMiddleware.isAuth ,metalController.deleteMetal);
   
   // Experimentos ==========================================================
+  router.get('/experiment/all', authMiddleware.isAuth ,experimentController.getAllExperiments);
   router.get('/experiment/get/:id', authMiddleware.isAuth ,experimentController.getExperiment);
   router.post('/experiment/new', authMiddleware.isAuth ,experimentController.newExperiment);
   router.put('/experiment/update/:id', authMiddleware.isAuth ,experimentController.updateExperiment);
