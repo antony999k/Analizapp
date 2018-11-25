@@ -20,7 +20,7 @@ module.exports = (() => {
   router.get('/users', authMiddleware.isAuth, authMiddleware.isAuthAdmin, userController.getUsers);
   //Obtener un usuario
   router.get('/user', userController.getUser);
-  router.get('/user/me', userController.getMyUser);
+  router.get('/user/me',authMiddleware.isAuth ,userController.getMyUser);
   router.get('/user/:id', authMiddleware.isAuth, authMiddleware.isAuthAdmin, userController.getUser);
   //Registrar un usuario
   router.post('/user', userController.registerUser);
@@ -34,7 +34,7 @@ module.exports = (() => {
   // Analisis de Imagenes ============================================
   router.get('/images/get/:id', authMiddleware.isAuth,imageController.getImage);
   router.get('/images/me', authMiddleware.isAuth,imageController.getImages);
-  router.post('/analyze', authMiddleware.isAuth ,imageController.analyzeImage);
+  router.post('/images/analyze', authMiddleware.isAuth ,imageController.analyzeImage);
 
   // Metales ==========================================================
   router.get('/metal/all', authMiddleware.isAuth ,metalController.getAllMetals);
