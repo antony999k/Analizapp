@@ -3,6 +3,7 @@ const fs = require('fs');
 const request = require('request');
 const db = require('./database.controller');
 const imageHelper = require('../helpers/image.helper');
+const crudHelper = require('../helpers/crud.helper');
 
 exports.getImage = (req, res, next) => {
     let query = imageHelper.queryBy('i.id = '+req.params.id);
@@ -19,6 +20,11 @@ exports.getImage = (req, res, next) => {
           }
         res.send(results);
     });
+}
+
+exports.getAllImages = (req, res, next) => {
+    res.locals.query = imageHelper.queryAll();
+    crudHelper.get(req, res, next);
 }
 
 exports.getImages = (req, res, next) => {
@@ -41,7 +47,7 @@ var validate_image_form = function(form){
 //Analiza imagen a traves de Flask ********************************************************************************
 exports.analyzeImage = (req, res, next) => {
     req.pipe(request.post('http://localhost:5000/analyze',null, (err, httpResponse, body) => {
-        var data = JSON.parse(body);    
+        var data = JSON.parse(body); 
         if(err) return res.sendStatus(500);
         if(data["error"] != null || !validate_image_form(data.form)) return res.status(500).send({
             "error" : "Invalid format!"
@@ -49,7 +55,7 @@ exports.analyzeImage = (req, res, next) => {
         data.usuario_id = res.locals.tokenDecoded.id;
         data.upload_folder = req.app.get('UPLOAD_FOLDER');
         data.analyzed_folder = req.app.get('ANALYZED_FOLDER');
-        
+
         let query = imageHelper.insertQuery(data);
 
         db.query(query, function(err, results, fields) {
