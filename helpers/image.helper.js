@@ -1,15 +1,17 @@
 //helpers/images.helper.js
 'use strict'
 
-exports.queryBy = function(where_clause){
+var queryAll = function(){
     return 'SELECT \
                 i.id as id, \
                 m.nombre as metal, \
                 e.nombre as experimento, \
                 i.tiempo_minutos as tiempo, \
                 i.grados as grados, \
+                i.descripcion as descripcion, \
                 i.area_picos as area_picos, \
                 i.area_abajo as area_abajo, \
+                i.filename as filename, \
                 i.ruta_original as ruta_original, \
                 i.ruta_analisis as ruta_analisis \
             FROM \
@@ -21,9 +23,13 @@ exports.queryBy = function(where_clause){
             LEFT JOIN \
                 Experimento e \
             ON \
-                e.id = i.experimento_id \
-            WHERE \
-                '+where_clause+';';
+                e.id = i.experimento_id'
+}
+
+exports.queryAll = queryAll;  
+
+exports.queryBy = function(where_clause){
+    return queryAll() + 'WHERE ' + where_clause;
 }
 
 exports.insertQuery = function(data){
@@ -36,6 +42,7 @@ exports.insertQuery = function(data){
                 grados, \
                 area_picos, \
                 area_abajo, \
+                filename, \
                 ruta_original, \
                 ruta_analisis) \
             VALUES ( \
@@ -47,6 +54,7 @@ exports.insertQuery = function(data){
                 ' + data.form.grados + ', \
                 ' + data.results.peakArea + ', \
                 ' + data.results.bottomArea + ', \
+                "' + data.results.filename + '", \
                 "' + data.upload_folder + data.results.filename + '", \
                 "' + data.analyzed_folder + data.results.filename + '");\
             SELECT LAST_INSERT_ID();';

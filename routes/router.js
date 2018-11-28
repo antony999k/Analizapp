@@ -32,6 +32,7 @@ module.exports = (() => {
   router.post('/user/change-password', userController.changePassword);
 
   // Analisis de Imagenes ============================================
+  router.get('/images/all', authMiddleware.isAuth ,imageController.getAllImages);
   router.get('/images/get/:id', authMiddleware.isAuth,imageController.getImage);
   router.get('/images/me', authMiddleware.isAuth,imageController.getImages);
   router.post('/images/analyze', authMiddleware.isAuth ,imageController.analyzeImage);
