@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(compression()); //Hace el api más ligera y más rápida
 app.use(helmet()); // Añade seguridad a las cabezaras http
+app.use("/user_data", express.static(path.join(__dirname, 'user_data')));
 
 // Agrega variables globales del directorio de las imagenes subidas por el usuario
 app.set('UPLOAD_FOLDER', __dirname + "/user_data/images/");
