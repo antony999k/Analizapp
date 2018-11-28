@@ -40,6 +40,7 @@ create table Imagen (
     grados float,
     area_picos float,
     area_abajo float,
+    filename varchar(200) not null,
     ruta_original varchar(200) not null,
     ruta_analisis varchar(200) not null,
     primary key (id),
