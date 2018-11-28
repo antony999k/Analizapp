@@ -28,8 +28,8 @@ app.set('ANALYZED_FOLDER', __dirname + "/user_data/analyzed_images/");
 
 // Corre servidor de flask para analisar imagenes con los argumentos para los directorios necesarios
 child_process.spawn(
-    "python", 
-    ["./analyze_server.py", app.get('UPLOAD_FOLDER'), app.get('ANALYZED_FOLDER')], 
+    "python",
+    ["./analyze_server.py", app.get('UPLOAD_FOLDER'), app.get('ANALYZED_FOLDER')],
     {stdio : "inherit"}
 );
 

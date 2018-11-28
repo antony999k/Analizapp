@@ -26,7 +26,7 @@ exports.getUser = (req, res, next) => {
   let id = req.params.id;
 
   db.query(
-    'SELECT * FROM Usuarios WHERE id=' + id,
+    'SELECT id, nombre, apellido, correo, img, imgSubidas, empresa, puesto, area FROM Usuarios WHERE id=' + id,
     function(err, results, fields) {
       if (err) {
         let e = new Error(err);
@@ -46,9 +46,9 @@ exports.getUser = (req, res, next) => {
 }
 
 //Obtener mi usuario ********************************************************************************
-exports.getMyUser = (req, res, next) => {  
+exports.getMyUser = (req, res, next) => {
   db.query(
-    'SELECT nombre, apellido, correo, img FROM Usuarios WHERE correo=\'' + res.locals.tokenDecoded.correo + '\'',
+    'SELECT id, nombre, apellido, correo, img, imgSubidas, empresa, puesto, area FROM Usuarios WHERE correo=\'' + res.locals.tokenDecoded.correo + '\'',
     function(err, results, fields) {
       if (err) {
         let e = new Error(err);
@@ -62,7 +62,7 @@ exports.getMyUser = (req, res, next) => {
       }
       //Convierte el array en objeto
       let finalResults = results[0]
-  
+
       res.send(finalResults)
     }
   );
@@ -81,7 +81,7 @@ exports.registerUser = (req, res, next) => {
     return next(e);
   }
 
-  let Usuario = req.body.usuario;  
+  let Usuario = req.body.usuario;
 
   bcrypt.hash(req.body.usuario.contrasenia, saltRounds, function(err, hash) {
     if (err) {
