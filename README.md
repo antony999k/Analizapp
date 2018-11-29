@@ -1,7 +1,7 @@
 # API Analizapp
 Creado: @antony999k y @javicuriel
 
-[![version](https://img.shields.io/badge/version-1.0.0-ff69b4.svg)]()
+[![version](https://img.shields.io/badge/version-1.1.0-ff69b4.svg)]()
 [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/wasabeef/awesome-android-ui)
 
 Gestiona el registro de usuarios, perfiles de usuarios, reportes de usuarios y datos de las imágenes.
@@ -205,11 +205,11 @@ El campo **message** es personalizado y debe estar en ingles
 # Contribuir con el API
 
 ## Paquetes/Librerias recomendadas (Globales/Locales)
-- Python: `2.7.15rc1`
-- OpenCV: `3.2.0`
-- Flask: `1.0.2`
-- Nodejs: `10.14.0`
-- Nodemon `1.18.7` (Opcional para testing)
+- Python: `v2.7.15rc1`
+- OpenCV: `v3.2.0`
+- Flask: `v1.0.2`
+- Nodejs: `v8.11.3`
+- Nodemon `v1.18.7` (Opcional para testing)
 
 ## Iniciar aplicación (Desarrollo)
 - `npm install` Instalar paquetes de npm
@@ -242,7 +242,6 @@ El campo **message** es personalizado y debe estar en ingles
 ## Notas
 
 # Changelog
-No existen cambios de ruptura
 
 # Ayuda
 @antony999k, antony999k@hotmail.com
