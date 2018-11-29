@@ -120,6 +120,13 @@ Ruta Producción: http://138.68.53.94/
       "token":"$token",
     }
 
+## Sumar el recurso de imgSubidas (PUT) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /add-uploaded-image
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+
 ## Contraseña olvidada / Mandar correo (POST) ![#ea4848](https://placehold.it/15/ea4848/000000?text=+)
     /user/recovery
 

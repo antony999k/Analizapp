@@ -195,3 +195,22 @@ exports.recovery = (req, res, next) =>{
 exports.changePassword = (req, res, next)=>{
   res.send("jeloww2")
 }
+
+//Añadir imágen subida usuario ********************************************************************************
+exports.addUploadedImage = (req, res, next) => {
+  db.query(
+    'UPDATE Usuarios SET imgSubidas = imgSubidas + 1  WHERE correo=\'' + res.locals.tokenDecoded.correo + '\'',
+    function(err, results, fields) {
+      if (err) {
+        let e = new Error(err);
+        e.name = "internal";
+        return next(e);
+      }
+      res.status(200).send({
+        status: 200,
+        name: 'OK',
+        customMessage: 'El usuario sumó una imágen correctamente',
+        message: 'Recurso actualizado',
+      });
+  });
+}
