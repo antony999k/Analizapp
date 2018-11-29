@@ -204,6 +204,13 @@ El campo **message** es personalizado y debe estar en ingles
 
 # Contribuir con el API
 
+## Paquetes/Librerias recomendadas (Globales/Locales)
+- Python: `2.7.15rc1`
+- OpenCV: `3.2.0`
+- Flask: `1.0.2`
+- Nodejs: `10.14.0`
+- Nodemon `1.18.7` (Opcional para testing)
+
 ## Iniciar aplicación (Desarrollo)
 - `npm install` Instalar paquetes de npm
 - `npm start` Para iniciar con nodemon
