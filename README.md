@@ -218,9 +218,11 @@ El campo **message** es personalizado y debe estar en ingles
 - `npm run dev` Para iniciar en modo desarrollo (muesta los logs)
 
 ## Pasos para correcto funcionamiento
-1. Descargar el repositorio
-2. Instalar paquetes de npm
-3. Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
+1. Instalar paquetes/librerias Locales
+2. Descargar el repositorio
+3. Instalar paquetes de npm
+4. Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
+5. Correr el servidor
 
 ## Guía de estilos
 ### Mensajes en los Commits de Git
