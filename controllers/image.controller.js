@@ -6,20 +6,8 @@ const imageHelper = require('../helpers/image.helper');
 const crudHelper = require('../helpers/crud.helper');
 
 exports.getImage = (req, res, next) => {
-    let query = imageHelper.queryBy('i.id = '+req.params.id);
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        if (results.length == 0) {
-            let e = new Error('Imagen no encontrada');
-            e.name = "notFound";
-            return next(e);
-          }
-        res.send(results);
-    });
+    res.locals.query = imageHelper.queryBy('i.id = '+req.params.id);
+    crudHelper.get(req, res, next);
 }
 
 exports.getAllImages = (req, res, next) => {
@@ -28,16 +16,8 @@ exports.getAllImages = (req, res, next) => {
 }
 
 exports.getImages = (req, res, next) => {
-    let query = imageHelper.queryBy('i.usuario_id = '+res.locals.tokenDecoded.id);
-    
-    db.query(query, (err, results, fields) => {
-        if (err) {
-            let e = new Error(err);
-            e.name = "internal";
-            return next(e);
-        }
-        res.send(results);
-    });
+    res.locals.query = imageHelper.queryBy('i.usuario_id = '+res.locals.tokenDecoded.id);
+    crudHelper.get(req, res, next);
 }
 
 var validate_image_form = function(form){

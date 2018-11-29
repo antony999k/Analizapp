@@ -29,7 +29,7 @@ var queryAll = function(){
 exports.queryAll = queryAll;  
 
 exports.queryBy = function(where_clause){
-    return queryAll() + 'WHERE ' + where_clause;
+    return queryAll() + ' WHERE ' + where_clause;
 }
 
 exports.insertQuery = function(data){
