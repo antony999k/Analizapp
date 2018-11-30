@@ -1,7 +1,9 @@
 # API Analizapp
 Creado: @antony999k y @javicuriel
 
-[![version](https://img.shields.io/badge/version-0.1.0-ff69b4.svg)]()
+<img src="https://i.imgur.com/CcTByNI.png" alt="drawing" width="200"/>
+
+[![version](https://img.shields.io/badge/version-1.1.0-ff69b4.svg)]()
 [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/wasabeef/awesome-android-ui)
 
 Gestiona el registro de usuarios, perfiles de usuarios, reportes de usuarios y datos de las imágenes.
@@ -120,6 +122,13 @@ Ruta Producción: http://138.68.53.94/
       "token":"$token",
     }
 
+## Sumar el recurso de imgSubidas (PUT) ![#c5f015](https://placehold.it/15/c5f015/000000?text=+)
+    /add-uploaded-image
+
+#### Header (Cualquier usuario registrado)
+    'authorization':'$token'
+
+
 ## Contraseña olvidada / Mandar correo (POST) ![#ea4848](https://placehold.it/15/ea4848/000000?text=+)
     /user/recovery
 
@@ -197,6 +206,13 @@ El campo **message** es personalizado y debe estar en ingles
 
 # Contribuir con el API
 
+## Paquetes/Librerias recomendadas (Globales/Locales)
+- Python: `v2.7.15rc1`
+- OpenCV: `v3.2.0`
+- Flask: `v1.0.2`
+- Nodejs: `v8.11.3`
+- Nodemon `v1.18.7` (Opcional para testing)
+
 ## Iniciar aplicación (Desarrollo)
 - `npm install` Instalar paquetes de npm
 - `npm start` Para iniciar con nodemon
@@ -204,9 +220,11 @@ El campo **message** es personalizado y debe estar en ingles
 - `npm run dev` Para iniciar en modo desarrollo (muesta los logs)
 
 ## Pasos para correcto funcionamiento
-1. Descargar el repositorio
-2. Instalar paquetes de npm
-3. Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
+1. Instalar paquetes/librerias Locales
+2. Descargar el repositorio
+3. Instalar paquetes de npm
+4. Es necesario contar con el archivo *.env*, este no se puede descargar via Github ya que contiene claves privadas (pedir al administrador del repositorio)
+5. Correr el servidor
 
 ## Guía de estilos
 ### Mensajes en los Commits de Git
@@ -226,7 +244,6 @@ El campo **message** es personalizado y debe estar en ingles
 ## Notas
 
 # Changelog
-No existen cambios de ruptura
 
 # Ayuda
 @antony999k, antony999k@hotmail.com

@@ -30,6 +30,8 @@ module.exports = (() => {
   router.post('/user/recovery', userController.recovery);
   //Recuperar cuenta ( Cambiar contraseña )
   router.post('/user/change-password', userController.changePassword);
+  //Añadir imágen subida usuario
+  router.put('/add-uploaded-image', authMiddleware.isAuth, userController.addUploadedImage)
 
   // Analisis de Imagenes ============================================
   router.get('/images/all', authMiddleware.isAuth ,imageController.getAllImages);
@@ -43,15 +45,15 @@ module.exports = (() => {
   router.post('/metal/new', authMiddleware.isAuth ,metalController.newMetal);
   router.put('/metal/update/:id', authMiddleware.isAuth ,metalController.updateMetal);
   router.delete('/metal/delete/:id', authMiddleware.isAuth ,metalController.deleteMetal);
-  
+
   // Experimentos ==========================================================
   router.get('/experiment/all', authMiddleware.isAuth ,experimentController.getAllExperiments);
   router.get('/experiment/get/:id', authMiddleware.isAuth ,experimentController.getExperiment);
   router.post('/experiment/new', authMiddleware.isAuth ,experimentController.newExperiment);
   router.put('/experiment/update/:id', authMiddleware.isAuth ,experimentController.updateExperiment);
   router.delete('/experiment/delete/:id', authMiddleware.isAuth ,experimentController.deleteExperiment);
-  
-  
+
+
 
 
   // General =========================================================
