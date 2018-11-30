@@ -51,7 +51,9 @@ exports.analyzeImage = (req, res, next) => {
                 status: 200,
                 name: 'OK',
                 message: 'Imagen analizada correctamente',
-                image_id: results[0]["insertId"]
+                results: {
+                    id: results[0]["insertId"]
+                }
             });
         });
     }));
